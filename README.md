@@ -3,6 +3,8 @@ Tribunal Bot
 
 This is a discord bot for the TQ&A forum.
 
+It's been through a lot of revisions because of changes in which discord libraries work, changes from token to slash commands, and changes to the hosting server. Consequently, it's looking a little sloppy at the moment.
+
 The Tribunal Bot provides definitions for the roles in TQ&A, and keeps a record of mock trials.
 These are the commands for general use:
 
@@ -29,6 +31,7 @@ These are the commands for judges:
 
 Known bugs:
 - Right now, none of the penalties are working, because of some kind of unicode error associated with the serialize function for dumping data into the "replit" db.
+- Clean up the code and verify accuracy of the comments.
 
 Feature wishlist:
   /close - to delete dead cases
