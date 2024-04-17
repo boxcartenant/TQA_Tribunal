@@ -3,7 +3,7 @@ Tribunal Bot
 
 This is a discord bot for the TQ&A forum.
 
-It's been through a lot of revisions because of changes in which discord libraries work, changes from token to slash commands, and changes to the hosting server. Consequently, it's looking a little sloppy at the moment.
+It's been through a lot of revisions because of changes to discord libraries, changes from token to slash commands, and changes to the hosting server. Consequently, it's looking a little sloppy at the moment.
 
 The Tribunal Bot provides definitions for the roles in TQ&A, and keeps a record of mock trials.
 These are the commands for general use:
