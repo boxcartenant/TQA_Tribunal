@@ -286,7 +286,7 @@ async def doPenalty(ctx, target, penaltyID, modifier):
     print(target)
     targetUser = ctx.guild.get_member_named(str(target))
     if targetUser == None:
-      ctx.respond("The defendant wasn't found in our guild. No penalty to perform.")
+      await ctx.respond("The defendant wasn't found in our guild. No penalty to perform.")
       return
     print(targetUser)
     #print("The penalty script is running with penaltyID " + str(penaltyID))
@@ -396,7 +396,7 @@ async def accuse(ctx, defendant: discord.Option(discord.Member, "User to be accu
       myID = max(node.caseid for node in caselist) + 1
     else:
       myID = 1
-    targetUser = ctx.guild.get_member_named(str(defendant))
+    targetUser = ctx.guild.get_member_named(str(defendant)) #splitting the defendant name to remove the 
     if targetUser:
       myrecordstring = "{} has accused {} with the following claim: ".format(ctx.author.mention, targetUser.mention)
     else:
