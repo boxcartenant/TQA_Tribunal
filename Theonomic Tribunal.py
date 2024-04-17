@@ -118,10 +118,20 @@ async def serializeCaseList():
       sCaseList.append([caseprefix + "record " + format(thisrecordid, '04d'), record[1]])
       thisrecordid += 1
     thiscaseentryid += 1
-	
-	#dump the case list into the db 
+
+  #we're getting "UnicodeEncodeError: 'latin-1' can't encode character '...' ...: ordinal not in range(256)". 
+  #we'll sanitize all that out. This function is only used here, so I won't make it global I guess.
+  def sanitize_input(text):
+    try:
+        text.encode('latin-1')  # Try encoding the text with latin-1
+        return text  # If successful, return the original text
+    except UnicodeEncodeError:
+        sanitized_text = ''.join(c if ord(c) < 256 else '?' for c in text)
+        return sanitized_text
+	    
+  	#dump the case list into the db 
   for item in sCaseList:
-    db[item[0]] = item[1]
+    db[sanitize_input(item[0])] = sanitize_input(item[1])
     #print("{}: {}".format(item[0],item[1]))
 	
   #delete the old caselist
