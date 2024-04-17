@@ -34,7 +34,7 @@ import asyncio
 
 guild_ids= [123456789123456789]
 
-token = 'TOP_SECRET_TOKEN' #token for bot to join discord
+token = 'TOP SECRET' #token for bot to join discord
 
 
 #-----VARIABLES
@@ -122,17 +122,18 @@ async def serializeCaseList():
   #we're getting "UnicodeEncodeError: 'latin-1' can't encode character '...' ...: ordinal not in range(256)". 
   #we'll sanitize all that out. This function is only used here, so I won't make it global I guess.
   def sanitize_input(text):
-    try:
-        text.encode('latin-1')  # Try encoding the text with latin-1
-        return text  # If successful, return the original text
-    except UnicodeEncodeError:
-        sanitized_text = ''.join(c if ord(c) < 256 else '?' for c in text)
-        return sanitized_text
-	    
+    if (text):
+      try:
+          text.encode('latin-1')  # Try encoding the text with latin-1
+          return text  # If successful, return the original text
+      except:
+          sanitized_text = ''.join(c if ord(c) < 256 else '?' for c in str(text))
+          return sanitized_text
+
   	#dump the case list into the db 
   for item in sCaseList:
+    db[item[0]] = item[1]
     db[sanitize_input(item[0])] = sanitize_input(item[1])
-    #print("{}: {}".format(item[0],item[1]))
 	
   #delete the old caselist
   oldCaseList = db.prefix("case " + str(db_caselist_key))
@@ -184,8 +185,11 @@ async def deserializeCaseList():
     if (db[caseprefix + "judge"] == None) or (db[caseprefix + "judge"] == 'None'):
       myjudge = None
     else:
-      myjudge			 = db[caseprefix + "judge"] #discord.Member
-    mywitnessqty	 = int(db[caseprefix + "witnessqty"]) #int
+      myjudge = db[caseprefix + "judge"] #discord.Member
+    if (db[caseprefix + "witnessqty"]):
+      mywitnessqty = int(db[caseprefix + "witnessqty"]) #int
+    else:
+      mywitnessqty = 0
 		
     mycase = case(mycaseid, myactivetrial, mycompletetrial, mypenaltypending, mydefendant, myaccuser, myaccusationtime, mytrialendtime, [], mydeferredpenalty, mypenaltyid, myjudge, mywitnessqty)
     recordtypelist = db.prefix(caseprefix + "recordtype ")
@@ -284,11 +288,13 @@ async def tempban(targetUser, minutes, ctx):
 #penaltyList = ["Acquit", "Nick-Change", "Chastize", "Luther Chastize", "Minute Mute", "Hour Mute", "Kick", "Day Ban", "Permaban"]
 async def doPenalty(ctx, target, penaltyID, modifier):
     print(target)
-    targetUser = ctx.guild.get_member_named(str(target))
+    targetUser = ctx.guild.get_member_named(str(target).split(' ')[0])
     if targetUser == None:
-      await ctx.respond("The defendant wasn't found in our guild. No penalty to perform.")
+      await ctx.respond("The defendant wasn't found in our guild. Administrators will have to assist.")
+      print("====================\nThe following user was not found. Update username string parsing to defeat:")
+      print(targetUser)
       return
-    print(targetUser)
+      
     #print("The penalty script is running with penaltyID " + str(penaltyID))
     if (penaltyID == "Acquit"): #Acquit: close the case; no other action.
         await ctx.respond("{} has been acquitted. The record is clean.".format(targetUser.mention))
@@ -396,7 +402,7 @@ async def accuse(ctx, defendant: discord.Option(discord.Member, "User to be accu
       myID = max(node.caseid for node in caselist) + 1
     else:
       myID = 1
-    targetUser = ctx.guild.get_member_named(str(defendant)) #splitting the defendant name to remove the 
+    targetUser = ctx.guild.get_member_named(str(defendant).split(' ')[0])
     if targetUser:
       myrecordstring = "{} has accused {} with the following claim: ".format(ctx.author.mention, targetUser.mention)
     else:
